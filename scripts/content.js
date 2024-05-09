@@ -75,9 +75,9 @@ chrome.storage.sync.get('extensionEnabled', function(data) {
 function fetchGptResponse(text, callback) {
   chrome.storage.local.get('gptKey', (result) => {
     const gptKey = result.gptKey;
-    alert(`GPT key fetched: ${gptKey}`);
+    console.log(`GPT key fetched: ${gptKey}`);
     if (!gptKey) {
-      console.error('GPT key is not set.');
+      alert('GPT key is not set.');
       callback('GPT key is not set.');
       return;
     }
@@ -89,8 +89,7 @@ function fetchGptResponse(text, callback) {
     };
     const body = JSON.stringify({
       model: "gpt-3.5-turbo",
-      messages: [{role: "user", content: text}],
-      max_tokens: 150
+      messages: [{role: "user", content: "Answer the following question as if you were in an interview. Give the answer no introductory text: " + text}]
     });
 
     fetch(url, { method: "POST", headers: headers, body: body })

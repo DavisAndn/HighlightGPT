@@ -60,9 +60,8 @@ function verifyGptAPIKey(key, callback) {
 function fetchGptResponse(text, callback) {
   chrome.storage.local.get('gptKey', (result) => {
     const gptKey = result.gptKey;
-    alert(`GPT key fetched: ${gptKey}`);
     if (!gptKey) {
-      console.error('GPT key is not set.');
+      alert('GPT key is not set.');
       callback('GPT key is not set.');
       return;
     }
