@@ -21,17 +21,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Load the current choice from storage
   chrome.storage.sync.get('sourceChoice', function(data) {
-    const choice = data.sourceChoice || 'text';  // Default to 'google'
+    const choice = data.sourceChoice || 'text';  // Default to 'text'
     const selectedRadio = Array.from(radios).find(radio => radio.value === choice);
     if (selectedRadio) {
       selectedRadio.checked = true;
+      console.log(`Default radio set to: ${selectedRadio.value}`); // Confirm the default selection.
     }
-  });
+  });  
 
   // Save the choice when a radio button is selected
   radios.forEach(radio => {
+    console.log(`Attaching event listener to: ${radio.value}`); // This will confirm that each radio has the listener attached.
     radio.addEventListener('change', function() {
+      console.log(`Radio selection changed: ${this.value}`); // Log the change.
       chrome.storage.sync.set({ 'sourceChoice': this.value });
+      if (this.value === 'gpt' || this.value === 'google') {
+        console.log(`Query will be sent to: ${this.value}`);
+      }
     });
   });
 
@@ -101,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
           chrome.storage.sync.set({ 'googleKey': googleKey }, function() {
             googleRadio.disabled = false;
             googleKeyInput.type = 'password';  // Make the key unreadable
-            showKeySavedMessage('googleKeySaved');  // Show "Key Saved!" message
             googleKeySaved = true;  // Set the flag
             chrome.storage.sync.set({ 'googleKeySaved': true });  // Update stored flag
           });
@@ -116,25 +121,30 @@ document.addEventListener('DOMContentLoaded', function() {
   // Save GPT API key when the checkmark button is clicked
   saveGptKeyButton.addEventListener('click', function() {
     const gptKey = gptKeyInput.value;
-
+    console.log(`Attempting to save GPT key: ${gptKey}`);  // Log the key being saved.
+  
     if (gptKey === '') {
-      // If the key is empty, save it and disable the radio button
+      console.log('GPT key is empty, disabling radio button.');
       chrome.storage.sync.set({ 'gptKey': gptKey }, function() {
         gptRadio.disabled = true;
       });
     } else {
-      // Add validation here
       verifyGptAPIKey(gptKey, function(isValid, errorMessage) {
         if (isValid) {
+          console.log('GPT key is valid, saving and updating UI.');
           chrome.storage.sync.set({ 'gptKey': gptKey }, function() {
             gptRadio.disabled = false;
-            gptKeyInput.type = 'password';  // Make the key unreadable
-            showKeySavedMessage('gptKeySaved');  // Show "Key Saved!" message
-            gptKeySaved = true;  // Set the flag
-            chrome.storage.sync.set({ 'gptKeySaved': true });  // Update stored flag
+            gptKeyInput.type = 'password';
+            chrome.storage.sync.set({ 'gptKeySaved': true }, function() {
+              // Fetch the key to show in the alert
+              chrome.storage.sync.get('gptKey', data => {
+                alert(`GPT key saved successfully: ${data.gptKey}`);
+                console.log('GPT key saved successfully.');
+              });
+            });
           });
         } else {
-          // Display an error message
+          console.log(`Invalid GPT API Key: ${errorMessage}`);  // Log error message
           alert(`Invalid GPT API Key: ${errorMessage}`);
         }
       });
