@@ -56,3 +56,40 @@ function verifyGptAPIKey(key, callback) {
     callback(false, error.message);
   });
 }
+
+function fetchGptResponse(text, callback) {
+  chrome.storage.local.get('gptKey', (result) => {
+    const gptKey = result.gptKey;
+    alert(`GPT key fetched: ${gptKey}`);
+    if (!gptKey) {
+      console.error('GPT key is not set.');
+      callback('GPT key is not set.');
+      return;
+    }
+
+    const url = "https://api.openai.com/v1/chat/completions";
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${gptKey}`
+    };
+    const body = JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [{role: "user", content: text}],
+      max_tokens: 150
+    });
+
+    fetch(url, { method: "POST", headers: headers, body: body })
+      .then(response => response.json())
+      .then(data => {
+        if (data.choices && data.choices.length > 0) {
+          callback(data.choices[0].message.content);
+        } else {
+          callback("No response from GPT.");
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching GPT response:', error);
+        callback("Error fetching response.");
+      });
+  });
+}
