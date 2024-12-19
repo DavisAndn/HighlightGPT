@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Toggle Extension</title>
+  <link rel="stylesheet" type="text/css" href="popup.css">
+  <script src="utils.js"></script> <!-- Include utils.js here -->
+  <script src="popup.js"></script>
+</head>
+<body>
+  <div id="mainPage">
+    <div class="header">
+      <div></div> <!-- Empty div for alignment -->
+      <label class="switch">
+        <input type="checkbox" id="toggleButton">
+        <span class="slider"></span>
+      </label>
+      <span id="settingsButton" class="cog">&#9881;</span> <!-- Unicode cog -->
+    </div>
+    <div class="options">
+      <div class="option">
+        <input type="radio" id="google" name="source" value="google">
+        <label for="google">Google</label>
+      </div>
+      <div class="option">
+        <input type="radio" id="gpt" name="source" value="gpt">
+        <label for="gpt">GPT</label>
+      </div>
+      <div class="option">
+        <input type="radio" id="text" name="source" value="text">
+        <label for="text">Selected Text</label>
+      </div>
+    </div>
+  </div>
+  <div id="settingsPage" class="hidden">
+    <div class="header">
+      <span id="backButton" class="back">&#8592;</span> <!-- Unicode left arrow -->
+      <div></div> <!-- Empty div for alignment -->
+    </div>
+    <div class="input-group">
+      <label for="googleKey">Google Search API Key:</label>
+      <div class="input-with-button">
+        <input type="text" id="googleKey">
+        <button id="saveGoogleKey" class="save-button">&#10003;</button> <!-- Unicode checkmark -->
+      </div>
+      <span id="googleKeySaved" class="key-saved hidden">Key Saved!</span> <!-- New element -->
+    </div>
+    <div class="input-group">
+      <label for="gptKey">GPT API Key:</label>
+      <div class="input-with-button">
+        <input type="text" id="gptKey">
+        <button id="saveGptKey" class="save-button">&#10003;</button> <!-- Unicode checkmark -->
+      </div>
+      <span id="gptKeySaved" class="key-saved hidden">Key Saved!</span> <!-- New element -->
+    </div>
+</body>
+</html>
